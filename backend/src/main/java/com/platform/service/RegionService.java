@@ -4,6 +4,8 @@ import com.platform.api.dto.RegionDtos;
 import com.platform.api.mapper.EntityMapper;
 import com.platform.domain.entity.Region;
 import com.platform.domain.repository.RegionRepository;
+import com.platform.infrastructure.query.FilterCriterion;
+import com.platform.infrastructure.query.Specifications;
 import com.platform.service.exception.ConflictException;
 import com.platform.service.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,19 +32,26 @@ public class RegionService {
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = "regions", key = "#id")
+    public Page<RegionDtos.RegionDto> findAll(Pageable pageable, List<FilterCriterion> criteria) {
+        Specification<Region> spec = Specifications.fromCriteria(criteria, List.of("name", "code", "countryCode"));
+        return regionRepository.findAll(spec, pageable).map(mapper::toRegionDto);
+    }
+
+    @Transactional(readOnly = true)
+    @Cacheable(value = "regions:byId", key = "#id")
     public RegionDtos.RegionDto findById(Long id) {
         return mapper.toRegionDto(getOrThrow(id));
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "regions:byCountry", key = "#countryCode")
     public List<RegionDtos.RegionDto> findByCountry(String countryCode) {
         return regionRepository.findByCountryCode(countryCode).stream()
                 .map(mapper::toRegionDto).toList();
     }
 
     @Transactional
-    @CacheEvict(value = "regions", allEntries = true)
+    @CacheEvict(cacheNames = {"regions:list","regions:byId","regions:byCountry"}, allEntries = true)
     public RegionDtos.RegionDto create(RegionDtos.CreateRegionRequest request) {
         if (regionRepository.existsByCode(request.code())) {
             throw new ConflictException("Region code already exists: " + request.code());
@@ -50,7 +60,7 @@ public class RegionService {
     }
 
     @Transactional
-    @CacheEvict(value = "regions", key = "#id")
+    @CacheEvict(cacheNames = {"regions:list","regions:byId","regions:byCountry"}, allEntries = true)
     public RegionDtos.RegionDto update(Long id, RegionDtos.UpdateRegionRequest request) {
         Region region = getOrThrow(id);
         if (request.name() != null) region.setName(request.name());
@@ -63,7 +73,7 @@ public class RegionService {
     }
 
     @Transactional
-    @CacheEvict(value = "regions", key = "#id")
+    @CacheEvict(cacheNames = {"regions:list","regions:byId","regions:byCountry"}, allEntries = true)
     public void delete(Long id) {
         if (!regionRepository.existsById(id)) {
             throw new ResourceNotFoundException("Region not found: " + id);

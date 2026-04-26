@@ -7,7 +7,7 @@ COPY src ./src
 
 RUN apk add --no-cache maven && \
     mvn dependency:go-offline -q && \
-    mvn package -DskipTests -q
+    mvn package -Dmaven.test.skip=true -q
 
 # ── Stage 2: Runtime ─────────────────────────────────────────────────────────
 FROM eclipse-temurin:21-jre-alpine AS runtime

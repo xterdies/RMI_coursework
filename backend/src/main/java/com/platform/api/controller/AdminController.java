@@ -2,11 +2,13 @@ package com.platform.api.controller;
 
 import com.platform.api.dto.CommonDtos;
 import com.platform.api.dto.UserDto;
+import com.platform.infrastructure.query.QueryParamParsers;
 import com.platform.service.AuditService;
 import com.platform.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -25,8 +27,15 @@ public class AdminController {
 
     @GetMapping("/users")
     @Operation(summary = "List all users")
-    public CommonDtos.PagedResponse<UserDto> listUsers(@PageableDefault(size = 20) Pageable pageable) {
-        return CommonDtos.PagedResponse.from(userService.findAll(pageable));
+    public CommonDtos.PagedResponse<UserDto> listUsers(
+            @PageableDefault(size = 20) Pageable pageable,
+            @RequestParam(required = false) String filter,
+            @RequestParam(required = false) String sort) {
+        var criteria = QueryParamParsers.parseFilter(filter);
+        Pageable effective = (sort == null || sort.isBlank())
+                ? pageable
+                : PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), QueryParamParsers.parseSort(sort));
+        return CommonDtos.PagedResponse.from(userService.findAll(effective, criteria));
     }
 
     @GetMapping("/users/{id}")

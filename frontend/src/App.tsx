@@ -10,6 +10,8 @@ import RegionsPage from './pages/RegionsPage';
 import IndicatorsPage from './pages/IndicatorsPage';
 import ClusteringPage from './pages/ClusteringPage';
 import TrendsPage from './pages/TrendsPage';
+import AdminUsersPage from './pages/AdminUsersPage';
+import AdminLogsPage from './pages/AdminLogsPage';
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, staleTime: 30_000 } },
@@ -33,8 +35,8 @@ export default function App() {
               <Route path="/trends" element={<TrendsPage />} />
 
               <Route element={<AdminRoute />}>
-                <Route path="/admin/users" element={<div className="card"><h1 className="text-xl font-bold">User Management</h1><p className="text-gray-500 mt-2">Admin user management panel</p></div>} />
-                <Route path="/admin/logs" element={<div className="card"><h1 className="text-xl font-bold">Audit Logs</h1><p className="text-gray-500 mt-2">System audit log viewer</p></div>} />
+                <Route path="/admin/users" element={<AdminUsersPage />} />
+                <Route path="/admin/logs" element={<AdminLogsPage />} />
               </Route>
             </Route>
           </Route>

@@ -2,11 +2,14 @@ package com.platform.api.controller;
 
 import com.platform.api.dto.CommonDtos;
 import com.platform.api.dto.RegionDtos;
+import com.platform.infrastructure.query.QueryParamParsers;
 import com.platform.service.RegionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -25,9 +28,16 @@ public class RegionController {
 
     @GetMapping
     @Operation(summary = "List all regions (paginated)")
+    @Cacheable(cacheNames = "regions:list", key = "T(java.util.Objects).toString(#filter,'') + '|' + #pageable.pageNumber + ':' + #pageable.pageSize + ':' + #pageable.sort.toString()")
     public CommonDtos.PagedResponse<RegionDtos.RegionDto> list(
-            @PageableDefault(size = 20) Pageable pageable) {
-        return CommonDtos.PagedResponse.from(regionService.findAll(pageable));
+            @PageableDefault(size = 20) Pageable pageable,
+            @RequestParam(required = false) String filter,
+            @RequestParam(required = false) String sort) {
+        var criteria = QueryParamParsers.parseFilter(filter);
+        Pageable effective = (sort == null || sort.isBlank())
+                ? pageable
+                : PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), QueryParamParsers.parseSort(sort));
+        return CommonDtos.PagedResponse.from(regionService.findAll(effective, criteria));
     }
 
     @GetMapping("/{id}")

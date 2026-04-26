@@ -3,11 +3,14 @@ package com.platform.api.controller;
 import com.platform.api.dto.ClusteringDtos;
 import com.platform.api.dto.CommonDtos;
 import com.platform.domain.entity.User;
+import com.platform.infrastructure.query.QueryParamParsers;
 import com.platform.service.ClusteringService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -32,9 +35,16 @@ public class ClusteringController {
 
     @GetMapping
     @Operation(summary = "List all clustering runs")
+    @Cacheable(cacheNames = "clusteringRuns:list", key = "T(java.util.Objects).toString(#filter,'') + '|' + #pageable.pageNumber + ':' + #pageable.pageSize + ':' + #pageable.sort.toString()")
     public CommonDtos.PagedResponse<ClusteringDtos.ClusteringRunDto> list(
-            @PageableDefault(size = 10) Pageable pageable) {
-        return CommonDtos.PagedResponse.from(clusteringService.findAll(pageable));
+            @PageableDefault(size = 10) Pageable pageable,
+            @RequestParam(required = false) String filter,
+            @RequestParam(required = false) String sort) {
+        var criteria = QueryParamParsers.parseFilter(filter);
+        Pageable effective = (sort == null || sort.isBlank())
+                ? pageable
+                : PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), QueryParamParsers.parseSort(sort));
+        return CommonDtos.PagedResponse.from(clusteringService.findAll(effective, criteria));
     }
 
     @GetMapping("/{id}")

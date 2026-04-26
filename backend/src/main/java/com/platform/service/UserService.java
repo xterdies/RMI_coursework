@@ -6,12 +6,17 @@ import com.platform.domain.entity.Role;
 import com.platform.domain.entity.User;
 import com.platform.domain.repository.RoleRepository;
 import com.platform.domain.repository.UserRepository;
+import com.platform.infrastructure.query.FilterCriterion;
+import com.platform.infrastructure.query.Specifications;
 import com.platform.service.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +29,12 @@ public class UserService {
     @Transactional(readOnly = true)
     public Page<UserDto> findAll(Pageable pageable) {
         return userRepository.findAll(pageable).map(mapper::toUserDto);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<UserDto> findAll(Pageable pageable, List<FilterCriterion> criteria) {
+        Specification<User> spec = Specifications.fromCriteria(criteria, List.of("email", "fullName", "enabled", "role.name"));
+        return userRepository.findAll(spec, pageable).map(mapper::toUserDto);
     }
 
     @Transactional(readOnly = true)

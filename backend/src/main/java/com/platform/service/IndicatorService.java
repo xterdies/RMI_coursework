@@ -10,6 +10,8 @@ import com.platform.domain.repository.IndicatorValueRepository;
 import com.platform.service.exception.ConflictException;
 import com.platform.service.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,16 +29,19 @@ public class IndicatorService {
     private final EntityMapper mapper;
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "indicators:list")
     public List<IndicatorDtos.IndicatorDto> findAllIndicators() {
         return indicatorRepository.findAll().stream().map(mapper::toIndicatorDto).toList();
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "indicators:byId", key = "#id")
     public IndicatorDtos.IndicatorDto findIndicatorById(Long id) {
         return mapper.toIndicatorDto(getIndicatorOrThrow(id));
     }
 
     @Transactional
+    @CacheEvict(cacheNames = {"indicators:list"}, allEntries = true)
     public IndicatorDtos.IndicatorDto createIndicator(IndicatorDtos.CreateIndicatorRequest request) {
         if (indicatorRepository.findByCode(request.code()).isPresent()) {
             throw new ConflictException("Indicator code already exists: " + request.code());
@@ -45,6 +50,7 @@ public class IndicatorService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = {"indicators:list","indicators:byId","indicatorValues:timeSeries"}, allEntries = true)
     public void deleteIndicator(Long id) {
         if (!indicatorRepository.existsById(id)) {
             throw new ResourceNotFoundException("Indicator not found: " + id);
@@ -58,12 +64,14 @@ public class IndicatorService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "indicatorValues:timeSeries", key = "#regionId + ':' + #indicatorId")
     public List<IndicatorDtos.IndicatorValueDto> findValuesByRegionAndIndicator(Long regionId, Long indicatorId) {
         return valueRepository.findByRegionIdAndIndicatorIdOrderByYear(regionId, indicatorId)
                 .stream().map(mapper::toIndicatorValueDto).toList();
     }
 
     @Transactional
+    @CacheEvict(cacheNames = {"indicatorValues:timeSeries"}, allEntries = true)
     public IndicatorDtos.IndicatorValueDto createValue(IndicatorDtos.CreateIndicatorValueRequest request) {
         Region region = regionService.getOrThrow(request.regionId());
         EconomicIndicator indicator = getIndicatorOrThrow(request.indicatorId());
@@ -82,6 +90,7 @@ public class IndicatorService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = {"indicatorValues:timeSeries"}, allEntries = true)
     public void deleteValue(Long id) {
         if (!valueRepository.existsById(id)) {
             throw new ResourceNotFoundException("Indicator value not found: " + id);

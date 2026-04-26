@@ -4,12 +4,19 @@ import com.platform.api.dto.ClusteringDtos;
 import com.platform.api.mapper.EntityMapper;
 import com.platform.domain.entity.*;
 import com.platform.domain.repository.*;
+import com.platform.infrastructure.aop.MeasureExecutionTime;
+import com.platform.infrastructure.query.FilterCriterion;
+import com.platform.infrastructure.query.Specifications;
 import com.platform.service.exception.ResourceNotFoundException;
 import com.platform.service.exception.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,8 +34,11 @@ public class ClusteringService {
     private final RegionRepository regionRepository;
     private final KMeansAlgorithm kMeans;
     private final EntityMapper mapper;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
+    @CacheEvict(cacheNames = {"clusteringRuns:list","clusteringRuns:byId"}, allEntries = true)
+    @MeasureExecutionTime(value = "clustering.run", logArgs = true)
     public ClusteringDtos.ClusteringRunDto runClustering(ClusteringDtos.ClusteringRequest request, User user) {
         List<Region> regions = regionRepository.findAll();
         if (regions.size() < request.kClusters()) {
@@ -63,7 +73,10 @@ public class ClusteringService {
                     .build());
         }
 
-        return mapper.toClusteringRunDto(clusteringRunRepository.save(run));
+        ClusteringRun saved = clusteringRunRepository.save(run);
+        // Design Pattern: Observer/Event - publish domain event for side effects (audit/notifications) without coupling.
+        eventPublisher.publishEvent(new com.platform.service.event.ClusteringRunCompletedEvent(saved.getId(), saved.getCreatedBy().getId()));
+        return mapper.toClusteringRunDto(saved);
     }
 
     @Transactional(readOnly = true)
@@ -73,6 +86,13 @@ public class ClusteringService {
     }
 
     @Transactional(readOnly = true)
+    public Page<ClusteringDtos.ClusteringRunDto> findAll(Pageable pageable, List<FilterCriterion> criteria) {
+        Specification<ClusteringRun> spec = Specifications.fromCriteria(criteria, List.of("name", "algorithm", "year", "kClusters"));
+        return clusteringRunRepository.findAll(spec, pageable).map(mapper::toClusteringRunDto);
+    }
+
+    @Transactional(readOnly = true)
+    @Cacheable(value = "clusteringRuns:byId", key = "#id")
     public ClusteringDtos.ClusteringRunDto findById(Long id) {
         ClusteringRun run = clusteringRunRepository.findByIdWithAssignments(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Clustering run not found: " + id));
@@ -80,6 +100,7 @@ public class ClusteringService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = {"clusteringRuns:list","clusteringRuns:byId"}, allEntries = true)
     public void delete(Long id) {
         if (!clusteringRunRepository.existsById(id)) {
             throw new ResourceNotFoundException("Clustering run not found: " + id);

@@ -17,8 +17,12 @@ export const authApi = {
 
 // Regions
 export const regionsApi = {
-  list: (page = 0, size = 20) =>
-    apiClient.get<PagedResponse<RegionDto>>(`/regions?page=${page}&size=${size}`).then(r => r.data),
+  list: (page = 0, size = 20, params?: { filter?: string; sort?: string }) => {
+    const qp = new URLSearchParams({ page: String(page), size: String(size) });
+    if (params?.filter) qp.set('filter', params.filter);
+    if (params?.sort) qp.set('sort', params.sort);
+    return apiClient.get<PagedResponse<RegionDto>>(`/regions?${qp.toString()}`).then(r => r.data);
+  },
   getById: (id: number) => apiClient.get<RegionDto>(`/regions/${id}`).then(r => r.data),
   getByCountry: (code: string) => apiClient.get<RegionDto[]>(`/regions/country/${code}`).then(r => r.data),
   create: (data: Omit<RegionDto, 'id' | 'createdAt'>) =>
@@ -47,8 +51,12 @@ export const indicatorsApi = {
 export const clusteringApi = {
   run: (data: { name: string; kClusters: number; year: number; indicatorIds: number[] }) =>
     apiClient.post<ClusteringRunDto>('/clustering/run', data).then(r => r.data),
-  list: (page = 0, size = 10) =>
-    apiClient.get<PagedResponse<ClusteringRunDto>>(`/clustering?page=${page}&size=${size}`).then(r => r.data),
+  list: (page = 0, size = 10, params?: { filter?: string; sort?: string }) => {
+    const qp = new URLSearchParams({ page: String(page), size: String(size) });
+    if (params?.filter) qp.set('filter', params.filter);
+    if (params?.sort) qp.set('sort', params.sort);
+    return apiClient.get<PagedResponse<ClusteringRunDto>>(`/clustering?${qp.toString()}`).then(r => r.data);
+  },
   getById: (id: number) => apiClient.get<ClusteringRunDto>(`/clustering/${id}`).then(r => r.data),
   delete: (id: number) => apiClient.delete(`/clustering/${id}`),
   exportPdf: (id: number) =>
@@ -67,8 +75,12 @@ export const trendsApi = {
 
 // Admin
 export const adminApi = {
-  listUsers: (page = 0, size = 20) =>
-    apiClient.get(`/admin/users?page=${page}&size=${size}`).then(r => r.data),
+  listUsers: (page = 0, size = 20, params?: { filter?: string; sort?: string }) => {
+    const qp = new URLSearchParams({ page: String(page), size: String(size) });
+    if (params?.filter) qp.set('filter', params.filter);
+    if (params?.sort) qp.set('sort', params.sort);
+    return apiClient.get(`/admin/users?${qp.toString()}`).then(r => r.data);
+  },
   updateRole: (id: number, role: string) =>
     apiClient.patch(`/admin/users/${id}/role?role=${role}`).then(r => r.data),
   toggleUser: (id: number) => apiClient.patch(`/admin/users/${id}/toggle`).then(r => r.data),

@@ -51,4 +51,11 @@ public class ClusteringRun {
     @OneToMany(mappedBy = "run", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<ClusteringAssignment> assignments = new ArrayList<>();
+
+    @PrePersist
+    void onCreate() {
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
+        }
+    }
 }

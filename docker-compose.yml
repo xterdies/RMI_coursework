@@ -30,16 +30,20 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_started
     environment:
       DB_URL: jdbc:postgresql://db:5432/clustering_db
       DB_USER: ${DB_USER:-postgres}
       DB_PASSWORD: ${DB_PASSWORD:-postgres}
-      JWT_SECRET: ${JWT_SECRET:-404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRATION: ${JWT_EXPIRATION:-86400000}
       JWT_REFRESH_EXPIRATION: ${JWT_REFRESH_EXPIRATION:-604800000}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
-      CORS_ORIGINS: http://localhost:5173,http://localhost:80,http://frontend
+      CORS_ORIGINS: http://localhost:5173,http://localhost:80,http://localhost,http://frontend
       SERVER_PORT: 8080
     ports:
       - "8080:8080"
@@ -67,6 +71,13 @@ services:
       interval: 30s
       timeout: 5s
       retries: 3
+
+  # ── Redis (cache backend) ────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: clustering-redis
+    restart: unless-stopped
+    # Not exposed publicly; backend connects via internal network.
 
 volumes:
   postgres_data:

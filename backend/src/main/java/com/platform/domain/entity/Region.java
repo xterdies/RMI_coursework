@@ -40,6 +40,16 @@ public class Region {
     @Column(nullable = false)
     private LocalDateTime updatedAt = LocalDateTime.now();
 
+    @PrePersist
+    void onCreate() {
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
+        }
+        if (this.updatedAt == null) {
+            this.updatedAt = this.createdAt;
+        }
+    }
+
     @PreUpdate
     void onUpdate() { this.updatedAt = LocalDateTime.now(); }
 }

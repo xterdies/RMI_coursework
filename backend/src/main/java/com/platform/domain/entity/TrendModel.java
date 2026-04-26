@@ -30,10 +30,10 @@ public class TrendModel {
     @Column(name = "model_type", nullable = false, length = 50)
     private String modelType = "LINEAR";
 
-    @Column(precision = 20, scale = 8)
+    @Column(precision = 24, scale = 8)
     private BigDecimal slope;
 
-    @Column(precision = 20, scale = 8)
+    @Column(precision = 24, scale = 8)
     private BigDecimal intercept;
 
     @Column(name = "r_squared", precision = 8, scale = 6)
@@ -42,7 +42,7 @@ public class TrendModel {
     @Column(name = "forecast_year", nullable = false)
     private Integer forecastYear;
 
-    @Column(name = "forecast_value", precision = 20, scale = 4)
+    @Column(name = "forecast_value", precision = 24, scale = 4)
     private BigDecimal forecastValue;
 
     @Type(JsonBinaryType.class)
@@ -51,4 +51,11 @@ public class TrendModel {
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @PrePersist
+    void onCreate() {
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
+        }
+    }
 }

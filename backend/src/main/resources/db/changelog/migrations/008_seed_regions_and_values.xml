@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+    <changeSet id="008-1" author="codex">
+        <sql><![CDATA[
+            WITH region_data(code, name, country_code, latitude, longitude, population, area_km2) AS (
+                VALUES
+                    ('US-CA', 'California', 'US', 36.7783, -119.4179, 39510000, 423967.00),
+                    ('US-TX', 'Texas', 'US', 31.9686, -99.9018, 30500000, 695662.00),
+                    ('DE-BY', 'Bavaria', 'DE', 48.7904, 11.4979, 13150000, 70550.00),
+                    ('FR-IDF', 'Ile-de-France', 'FR', 48.8499, 2.6370, 12360000, 12011.00),
+                    ('JP-13', 'Tokyo', 'JP', 35.6762, 139.6503, 14000000, 2194.00),
+                    ('IN-MH', 'Maharashtra', 'IN', 19.7515, 75.7139, 124000000, 307713.00),
+                    ('BR-SP', 'Sao Paulo', 'BR', -23.5505, -46.6333, 46650000, 248222.00),
+                    ('CA-ON', 'Ontario', 'CA', 50.0000, -85.0000, 14700000, 1076395.00),
+                    ('AU-NSW', 'New South Wales', 'AU', -31.2532, 146.9211, 8320000, 809444.00),
+                    ('ZA-GP', 'Gauteng', 'ZA', -26.2708, 28.1123, 15900000, 18178.00)
+            )
+            INSERT INTO regions (code, name, country_code, latitude, longitude, population, area_km2)
+            SELECT code, name, country_code, latitude, longitude, population, area_km2
+            FROM region_data
+            ON CONFLICT (code) DO NOTHING;
+        ]]></sql>
+    </changeSet>
+
+    <changeSet id="008-2" author="codex">
+        <sql><![CDATA[
+            WITH region_data(code, gdp_total_base, gdp_pc_base, population_base, unemployment_base, inflation_base) AS (
+                VALUES
+                    ('US-CA', 3200000000000::numeric, 81000::numeric, 39200000::numeric, 7.8::numeric, 1.9::numeric),
+                    ('US-TX', 1950000000000::numeric, 67000::numeric, 29000000::numeric, 7.9::numeric, 1.7::numeric),
+                    ('DE-BY', 750000000000::numeric, 57200::numeric, 13080000::numeric, 4.1::numeric, 0.5::numeric),
+                    ('FR-IDF', 830000000000::numeric, 67500::numeric, 12250000::numeric, 8.2::numeric, 0.6::numeric),
+                    ('JP-13', 1050000000000::numeric, 75000::numeric, 13900000::numeric, 3.2::numeric, 0.1::numeric),
+                    ('IN-MH', 420000000000::numeric, 3400::numeric, 122000000::numeric, 6.8::numeric, 6.2::numeric),
+                    ('BR-SP', 500000000000::numeric, 10900::numeric, 46100000::numeric, 13.9::numeric, 3.1::numeric),
+                    ('CA-ON', 630000000000::numeric, 42800::numeric, 14500000::numeric, 9.6::numeric, 0.7::numeric),
+                    ('AU-NSW', 510000000000::numeric, 62000::numeric, 8140000::numeric, 7.0::numeric, 0.9::numeric),
+                    ('ZA-GP', 180000000000::numeric, 11600::numeric, 15400000::numeric, 12.8::numeric, 3.2::numeric)
+            ),
+            years(year, inflation_shift) AS (
+                VALUES
+                    (2020, 0.0::numeric),
+                    (2021, 1.4::numeric),
+                    (2022, 4.9::numeric),
+                    (2023, 1.9::numeric)
+            )
+            INSERT INTO indicator_values (region_id, indicator_id, year, value, source_url)
+            SELECT
+                r.id,
+                i.id,
+                y.year,
+                CASE i.code
+                    WHEN 'GDP_TOTAL' THEN ROUND((rd.gdp_total_base * POWER(1.045::numeric, y.year - 2020))::numeric, 4)
+                    WHEN 'GDP_PER_CAPITA' THEN ROUND((rd.gdp_pc_base * POWER(1.028::numeric, y.year - 2020))::numeric, 4)
+                    WHEN 'POPULATION' THEN ROUND((rd.population_base * POWER(1.009::numeric, y.year - 2020))::numeric, 4)
+                    WHEN 'UNEMPLOYMENT' THEN ROUND(GREATEST(rd.unemployment_base - ((y.year - 2020) * 0.55::numeric), 2.2::numeric), 4)
+                    WHEN 'INFLATION' THEN ROUND(rd.inflation_base + y.inflation_shift, 4)
+                END,
+                'seed://regional-sample-data'
+            FROM region_data rd
+            JOIN regions r ON r.code = rd.code
+            JOIN economic_indicators i ON i.code IN ('GDP_TOTAL', 'GDP_PER_CAPITA', 'POPULATION', 'UNEMPLOYMENT', 'INFLATION')
+            CROSS JOIN years y
+            ON CONFLICT (region_id, indicator_id, year) DO NOTHING;
+        ]]></sql>
+    </changeSet>
+</databaseChangeLog>

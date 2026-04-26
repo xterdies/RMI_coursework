@@ -5,6 +5,8 @@ import com.platform.api.mapper.EntityMapper;
 import com.platform.domain.entity.*;
 import com.platform.domain.repository.IndicatorValueRepository;
 import com.platform.domain.repository.TrendModelRepository;
+import com.platform.service.trend.TrendComputationResult;
+import com.platform.service.trend.TrendComputationStrategy;
 import com.platform.service.exception.ValidationException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -28,6 +31,7 @@ class TrendServiceTest {
     @Mock RegionService regionService;
     @Mock IndicatorService indicatorService;
     @Mock EntityMapper mapper;
+    @Mock TrendComputationStrategy trendStrategy;
     @InjectMocks TrendService trendService;
 
     @Test
@@ -65,6 +69,10 @@ class TrendServiceTest {
         when(regionService.getOrThrow(1L)).thenReturn(region);
         when(indicatorService.getIndicatorOrThrow(1L)).thenReturn(indicator);
         when(indicatorValueRepository.findByRegionIdAndIndicatorIdOrderByYear(1L, 1L)).thenReturn(values);
+        when(trendStrategy.compute(values, 2025)).thenReturn(new TrendComputationResult(
+                BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.valueOf(170.0), Map.of("dataPoints", values.size())
+        ));
+        when(trendStrategy.modelType()).thenReturn("LINEAR");
         when(trendModelRepository.findByRegionIdAndIndicatorIdAndForecastYear(1L, 1L, 2025))
                 .thenReturn(Optional.empty());
         when(trendModelRepository.save(any())).thenReturn(savedModel);
@@ -75,6 +83,7 @@ class TrendServiceTest {
 
         var result = trendService.computeTrend(new TrendDtos.TrendRequest(1L, 1L, 2025));
         assertThat(result.forecastYear()).isEqualTo(2025);
+        verify(trendStrategy).compute(values, 2025);
         verify(trendModelRepository).save(any(TrendModel.class));
     }
 
