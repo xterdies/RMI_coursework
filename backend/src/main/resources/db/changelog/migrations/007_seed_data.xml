@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+    <changeSet id="007-1" author="platform">
+        <insert tableName="roles">
+            <column name="name" value="ADMIN"/>
+            <column name="description" value="System administrator with full access"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="name" value="USER"/>
+            <column name="description" value="Regular user with read and analysis access"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="007-2" author="platform">
+        <!-- Пароль: Admin1234! Сгенерирован онлайн-калькулятором bcrypt -->
+        <insert tableName="users">
+            <column name="email" value="admin@platform.com"/>
+            <column name="password_hash" value="$2a$12$csQpznG0kWvjI852aNBWMuYTpBKW7BX2KkMIXyzb/9TLGIobyN7TS"/>
+            <column name="full_name" value="System Administrator"/>
+            <column name="role_id" valueComputed="(SELECT id FROM roles WHERE name='ADMIN')"/>
+            <column name="enabled" valueBoolean="true"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="007-3" author="platform">
+        <insert tableName="economic_indicators">
+            <column name="code" value="GDP_TOTAL"/>
+            <column name="name" value="GDP (current US$)"/>
+            <column name="unit" value="USD"/>
+            <column name="source" value="World Bank"/>
+            <column name="world_bank_code" value="NY.GDP.MKTP.CD"/>
+        </insert>
+        <insert tableName="economic_indicators">
+            <column name="code" value="GDP_PER_CAPITA"/>
+            <column name="name" value="GDP per capita (current US$)"/>
+            <column name="unit" value="USD"/>
+            <column name="source" value="World Bank"/>
+            <column name="world_bank_code" value="NY.GDP.PCAP.CD"/>
+        </insert>
+        <insert tableName="economic_indicators">
+            <column name="code" value="POPULATION"/>
+            <column name="name" value="Population, total"/>
+            <column name="unit" value="persons"/>
+            <column name="source" value="World Bank"/>
+            <column name="world_bank_code" value="SP.POP.TOTL"/>
+        </insert>
+        <insert tableName="economic_indicators">
+            <column name="code" value="UNEMPLOYMENT"/>
+            <column name="name" value="Unemployment, total (% of labor force)"/>
+            <column name="unit" value="%"/>
+            <column name="source" value="World Bank"/>
+            <column name="world_bank_code" value="SL.UEM.TOTL.ZS"/>
+        </insert>
+        <insert tableName="economic_indicators">
+            <column name="code" value="INFLATION"/>
+            <column name="name" value="Inflation, consumer prices (annual %)"/>
+            <column name="unit" value="%"/>
+            <column name="source" value="World Bank"/>
+            <column name="world_bank_code" value="FP.CPI.TOTL.ZG"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

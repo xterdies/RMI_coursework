@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+    <changeSet id="005-1" author="platform">
+        <createTable tableName="trend_models">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="region_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_tm_region"
+                             references="regions(id)" deleteCascade="true"/>
+            </column>
+            <column name="indicator_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_tm_indicator"
+                             references="economic_indicators(id)"/>
+            </column>
+            <column name="model_type" type="VARCHAR(50)" defaultValue="LINEAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="slope" type="DECIMAL(20,8)"/>
+            <column name="intercept" type="DECIMAL(20,8)"/>
+            <column name="r_squared" type="DECIMAL(8,6)"/>
+            <column name="forecast_year" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="forecast_value" type="DECIMAL(20,4)"/>
+            <column name="parameters" type="JSONB"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="NOW()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint tableName="trend_models"
+                             columnNames="region_id,indicator_id,forecast_year"
+                             constraintName="uq_tm_region_indicator_year"/>
+    </changeSet>
+</databaseChangeLog>

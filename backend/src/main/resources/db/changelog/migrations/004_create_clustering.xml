@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+    <changeSet id="004-1" author="platform">
+        <createTable tableName="clustering_runs">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="k_clusters" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="year" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="algorithm" type="VARCHAR(50)" defaultValue="KMEANS">
+                <constraints nullable="false"/>
+            </column>
+            <column name="iterations" type="INTEGER"/>
+            <column name="inertia" type="DECIMAL(20,6)"/>
+            <column name="metadata" type="JSONB"/>
+            <column name="created_by" type="BIGINT">
+                <constraints foreignKeyName="fk_cr_user" references="users(id)"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="NOW()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="004-2" author="platform">
+        <createTable tableName="clustering_assignments">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="run_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_ca_run"
+                             references="clustering_runs(id)" deleteCascade="true"/>
+            </column>
+            <column name="region_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_ca_region"
+                             references="regions(id)"/>
+            </column>
+            <column name="cluster_label" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="distance_to_centroid" type="DECIMAL(20,6)"/>
+        </createTable>
+        <addUniqueConstraint tableName="clustering_assignments"
+                             columnNames="run_id,region_id"
+                             constraintName="uq_ca_run_region"/>
+        <createIndex tableName="clustering_assignments" indexName="idx_ca_run">
+            <column name="run_id"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

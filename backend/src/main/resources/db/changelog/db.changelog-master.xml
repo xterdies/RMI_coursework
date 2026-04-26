@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+    <include file="db/changelog/migrations/001_create_roles_users.xml"/>
+    <include file="db/changelog/migrations/002_create_regions_indicators.xml"/>
+    <include file="db/changelog/migrations/003_create_indicator_values.xml"/>
+    <include file="db/changelog/migrations/004_create_clustering.xml"/>
+    <include file="db/changelog/migrations/005_create_trend_models.xml"/>
+    <include file="db/changelog/migrations/006_create_system_logs.xml"/>
+    <include file="db/changelog/migrations/007_seed_data.xml"/>
+</databaseChangeLog>
