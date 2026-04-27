@@ -1,0 +1,168 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1123" height="794" viewBox="0 0 1123 794">
+  <defs>
+    <style>
+      .title { font: 700 28px Arial, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Arial, sans-serif; fill: #475569; }
+      .head { font: 700 15px Arial, sans-serif; fill: #ffffff; }
+      .text { font: 12px Arial, sans-serif; fill: #0f172a; }
+      .small { font: 11px Arial, sans-serif; fill: #475569; }
+      .tbl { fill: #ffffff; stroke: #94a3b8; stroke-width: 1.4; rx: 12; ry: 12; }
+      .hdrA { fill: #2563eb; }
+      .hdrB { fill: #059669; }
+      .hdrC { fill: #d97706; }
+      .hdrD { fill: #7c3aed; }
+      .line { stroke: #334155; stroke-width: 1.8; fill: none; marker-end: url(#m); }
+      .legend { fill: #f8fafc; stroke: #cbd5e1; }
+    </style>
+    <marker id="m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/>
+    </marker>
+  </defs>
+
+  <rect width="1123" height="794" fill="#f8fafc"/>
+  <text x="42" y="48" class="title">5.3. Схема модели базы данных</text>
+  <text x="42" y="74" class="subtitle">PostgreSQL schema after Liquibase migrations: авторизация, справочники, временные ряды, результаты кластеризации, тренды, аудит</text>
+
+  <g transform="translate(40,110)">
+    <rect width="216" height="136" class="tbl"/>
+    <rect width="216" height="28" class="hdrA" rx="12" ry="12"/>
+    <text x="14" y="19" class="head">roles</text>
+    <text x="12" y="48" class="text">PK id : BIGSERIAL</text>
+    <text x="12" y="66" class="text">name : VARCHAR(50) UNIQUE</text>
+    <text x="12" y="84" class="text">description : VARCHAR(255)</text>
+    <text x="12" y="102" class="text">created_at : TIMESTAMP</text>
+  </g>
+
+  <g transform="translate(304,110)">
+    <rect width="228" height="188" class="tbl"/>
+    <rect width="228" height="28" class="hdrA" rx="12" ry="12"/>
+    <text x="14" y="19" class="head">users</text>
+    <text x="12" y="48" class="text">PK id : BIGSERIAL</text>
+    <text x="12" y="66" class="text">email : VARCHAR(255) UNIQUE</text>
+    <text x="12" y="84" class="text">password_hash : VARCHAR(255)</text>
+    <text x="12" y="102" class="text">full_name : VARCHAR(255)</text>
+    <text x="12" y="120" class="text">oauth_provider, oauth_subject</text>
+    <text x="12" y="138" class="text">FK role_id → roles.id</text>
+    <text x="12" y="156" class="text">enabled : BOOLEAN</text>
+    <text x="12" y="174" class="text">created_at, updated_at</text>
+  </g>
+
+  <g transform="translate(584,110)">
+    <rect width="230" height="134" class="tbl"/>
+    <rect width="230" height="28" class="hdrA" rx="12" ry="12"/>
+    <text x="14" y="19" class="head">refresh_tokens</text>
+    <text x="12" y="48" class="text">PK id : BIGSERIAL</text>
+    <text x="12" y="66" class="text">FK user_id → users.id</text>
+    <text x="12" y="84" class="text">token : VARCHAR(512) UNIQUE</text>
+    <text x="12" y="102" class="text">expires_at : TIMESTAMP</text>
+    <text x="12" y="120" class="text">created_at : TIMESTAMP</text>
+  </g>
+
+  <g transform="translate(856,110)">
+    <rect width="228" height="154" class="tbl"/>
+    <rect width="228" height="28" class="hdrA" rx="12" ry="12"/>
+    <text x="14" y="19" class="head">system_logs</text>
+    <text x="12" y="48" class="text">PK id : BIGSERIAL</text>
+    <text x="12" y="66" class="text">FK user_id → users.id (nullable)</text>
+    <text x="12" y="84" class="text">action, entity_type, entity_id</text>
+    <text x="12" y="102" class="text">details : TEXT</text>
+    <text x="12" y="120" class="text">ip_address, status</text>
+    <text x="12" y="138" class="text">created_at : TIMESTAMP</text>
+  </g>
+
+  <g transform="translate(40,342)">
+    <rect width="238" height="172" class="tbl"/>
+    <rect width="238" height="28" class="hdrB" rx="12" ry="12"/>
+    <text x="14" y="19" class="head">regions</text>
+    <text x="12" y="48" class="text">PK id : BIGSERIAL</text>
+    <text x="12" y="66" class="text">code : VARCHAR(10) UNIQUE</text>
+    <text x="12" y="84" class="text">name : VARCHAR(255)</text>
+    <text x="12" y="102" class="text">country_code : VARCHAR(3)</text>
+    <text x="12" y="120" class="text">latitude, longitude : DECIMAL</text>
+    <text x="12" y="138" class="text">population : BIGINT</text>
+    <text x="12" y="156" class="text">area_km2, created_at, updated_at</text>
+  </g>
+
+  <g transform="translate(320,342)">
+    <rect width="252" height="154" class="tbl"/>
+    <rect width="252" height="28" class="hdrB" rx="12" ry="12"/>
+    <text x="14" y="19" class="head">economic_indicators</text>
+    <text x="12" y="48" class="text">PK id : BIGSERIAL</text>
+    <text x="12" y="66" class="text">code : VARCHAR(50) UNIQUE</text>
+    <text x="12" y="84" class="text">name : VARCHAR(255)</text>
+    <text x="12" y="102" class="text">description, unit, source</text>
+    <text x="12" y="120" class="text">world_bank_code : VARCHAR(50)</text>
+    <text x="12" y="138" class="text">created_at : TIMESTAMP</text>
+  </g>
+
+  <g transform="translate(618,330)">
+    <rect width="264" height="188" class="tbl"/>
+    <rect width="264" height="28" class="hdrC" rx="12" ry="12"/>
+    <text x="14" y="19" class="head">indicator_values</text>
+    <text x="12" y="48" class="text">PK id : BIGSERIAL</text>
+    <text x="12" y="66" class="text">FK region_id → regions.id</text>
+    <text x="12" y="84" class="text">FK indicator_id → economic_indicators.id</text>
+    <text x="12" y="102" class="text">year : INTEGER</text>
+    <text x="12" y="120" class="text">value : DECIMAL(20,4)</text>
+    <text x="12" y="138" class="text">source_url : VARCHAR(512)</text>
+    <text x="12" y="156" class="text">created_at : TIMESTAMP</text>
+    <text x="12" y="174" class="small">UNIQUE(region_id, indicator_id, year)</text>
+  </g>
+
+  <g transform="translate(40,566)">
+    <rect width="248" height="156" class="tbl"/>
+    <rect width="248" height="28" class="hdrD" rx="12" ry="12"/>
+    <text x="14" y="19" class="head">clustering_runs</text>
+    <text x="12" y="48" class="text">PK id : BIGSERIAL</text>
+    <text x="12" y="66" class="text">name, k_clusters, year</text>
+    <text x="12" y="84" class="text">algorithm, iterations, inertia</text>
+    <text x="12" y="102" class="text">metadata : JSONB</text>
+    <text x="12" y="120" class="text">FK created_by → users.id</text>
+    <text x="12" y="138" class="text">created_at : TIMESTAMP</text>
+  </g>
+
+  <g transform="translate(334,566)">
+    <rect width="248" height="156" class="tbl"/>
+    <rect width="248" height="28" class="hdrD" rx="12" ry="12"/>
+    <text x="14" y="19" class="head">clustering_assignments</text>
+    <text x="12" y="48" class="text">PK id : BIGSERIAL</text>
+    <text x="12" y="66" class="text">FK run_id → clustering_runs.id</text>
+    <text x="12" y="84" class="text">FK region_id → regions.id</text>
+    <text x="12" y="102" class="text">cluster_label : INTEGER</text>
+    <text x="12" y="120" class="text">distance_to_centroid : DECIMAL(20,6)</text>
+    <text x="12" y="138" class="small">UNIQUE(run_id, region_id)</text>
+  </g>
+
+  <g transform="translate(632,566)">
+    <rect width="272" height="156" class="tbl"/>
+    <rect width="272" height="28" class="hdrD" rx="12" ry="12"/>
+    <text x="14" y="19" class="head">trend_models</text>
+    <text x="12" y="48" class="text">PK id : BIGSERIAL</text>
+    <text x="12" y="66" class="text">FK region_id → regions.id</text>
+    <text x="12" y="84" class="text">FK indicator_id → economic_indicators.id</text>
+    <text x="12" y="102" class="text">model_type, slope, intercept, r_squared</text>
+    <text x="12" y="120" class="text">forecast_year, forecast_value, parameters JSONB</text>
+    <text x="12" y="138" class="small">UNIQUE(region_id, indicator_id, forecast_year)</text>
+  </g>
+
+  <path d="M 256 178 L 304 178" class="line"/>
+  <path d="M 532 178 L 584 178" class="line"/>
+  <path d="M 532 198 L 856 198" class="line"/>
+  <path d="M 278 428 L 618 424" class="line"/>
+  <path d="M 572 420 L 618 420" class="line"/>
+  <path d="M 278 664 L 334 664" class="line"/>
+  <path d="M 278 486 L 278 644 L 334 644" class="line"/>
+  <path d="M 278 454 L 632 454 L 632 644" class="line"/>
+  <path d="M 446 298 L 446 566" class="line"/>
+  <path d="M 814 244 L 814 286 L 164 286 L 164 342" class="line"/>
+
+  <rect x="926" y="328" width="158" height="144" class="legend"/>
+  <text x="944" y="354" class="text">Обозначения</text>
+  <text x="944" y="382" class="small">Синий: авторизация и аудит</text>
+  <text x="944" y="402" class="small">Зеленый: справочники</text>
+  <text x="944" y="422" class="small">Оранжевый: временные ряды</text>
+  <text x="944" y="442" class="small">Фиолетовый: аналитика</text>
+  <text x="944" y="462" class="small">Стрелка: внешний ключ</text>
+
+  <text x="42" y="770" class="small">Схема отражает 9 основных таблиц проекта и их связи, фактически используемые в Spring Data JPA и Liquibase migrations.</text>
+</svg>

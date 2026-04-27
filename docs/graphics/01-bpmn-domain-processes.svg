@@ -1,0 +1,150 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1123" height="794" viewBox="0 0 1123 794">
+  <defs>
+    <style>
+      .title { font: 700 28px Arial, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Arial, sans-serif; fill: #475569; }
+      .laneTitle { font: 700 16px Arial, sans-serif; fill: #0f172a; }
+      .text { font: 13px Arial, sans-serif; fill: #0f172a; }
+      .small { font: 12px Arial, sans-serif; fill: #334155; }
+      .task { fill: #eff6ff; stroke: #2563eb; stroke-width: 1.5; rx: 14; ry: 14; }
+      .taskAlt { fill: #ecfeff; stroke: #0891b2; stroke-width: 1.5; rx: 14; ry: 14; }
+      .event { fill: #ffffff; stroke: #0f172a; stroke-width: 2; }
+      .gateway { fill: #fff7ed; stroke: #ea580c; stroke-width: 1.5; }
+      .lane { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1; }
+      .note { fill: #f8fafc; stroke: #94a3b8; stroke-dasharray: 5 4; }
+      .arrow { stroke: #334155; stroke-width: 2; fill: none; marker-end: url(#m); }
+      .dash { stroke: #64748b; stroke-width: 1.5; fill: none; stroke-dasharray: 6 4; marker-end: url(#m); }
+    </style>
+    <marker id="m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/>
+    </marker>
+  </defs>
+
+  <rect width="1123" height="794" fill="#f8fafc"/>
+  <text x="42" y="48" class="title">5.1. BPMN-модель процессов предметной области</text>
+  <text x="42" y="74" class="subtitle">Regional Clustering Platform: регистрация, управление данными, кластеризация, тренд-анализ, экспорт и фоновая синхронизация</text>
+
+  <rect x="40" y="100" width="1043" height="128" class="lane"/>
+  <rect x="40" y="228" width="1043" height="152" class="lane"/>
+  <rect x="40" y="380" width="1043" height="182" class="lane"/>
+  <rect x="40" y="562" width="1043" height="182" class="lane"/>
+
+  <text x="58" y="128" class="laneTitle">Пользователь / администратор</text>
+  <text x="58" y="256" class="laneTitle">Frontend SPA (React + TypeScript)</text>
+  <text x="58" y="408" class="laneTitle">Backend (Spring Boot, REST API, сервисы)</text>
+  <text x="58" y="590" class="laneTitle">База данных / Redis / внешние сервисы</text>
+
+  <circle cx="115" cy="164" r="20" class="event"/>
+  <text x="94" y="199" class="small">Старт</text>
+
+  <rect x="172" y="138" width="130" height="48" class="task"/>
+  <text x="195" y="167" class="text">Открыть систему</text>
+
+  <polygon points="350,162 382,130 414,162 382,194" class="gateway"/>
+  <text x="362" y="166" class="small">Вход?</text>
+
+  <rect x="446" y="126" width="164" height="72" class="taskAlt"/>
+  <text x="478" y="155" class="text">Ввести учетные</text>
+  <text x="499" y="173" class="text">данные / OAuth2</text>
+
+  <rect x="658" y="138" width="150" height="48" class="task"/>
+  <text x="690" y="167" class="text">Выбрать раздел</text>
+
+  <path d="M 135 164 L 172 164" class="arrow"/>
+  <path d="M 302 162 L 350 162" class="arrow"/>
+  <path d="M 414 162 L 446 162" class="arrow"/>
+  <path d="M 610 162 L 658 162" class="arrow"/>
+
+  <rect x="140" y="280" width="176" height="56" class="taskAlt"/>
+  <text x="165" y="307" class="text">Отобразить форму</text>
+  <text x="174" y="325" class="text">логина / регистрации</text>
+
+  <rect x="380" y="280" width="190" height="56" class="taskAlt"/>
+  <text x="413" y="307" class="text">Показать дашборд и</text>
+  <text x="411" y="325" class="text">меню предметной области</text>
+
+  <polygon points="656,308 688,276 720,308 688,340" class="gateway"/>
+  <text x="663" y="312" class="small">Сценарий</text>
+
+  <rect x="774" y="244" width="126" height="48" class="task"/>
+  <text x="796" y="273" class="text">Regions</text>
+  <rect x="774" y="302" width="126" height="48" class="task"/>
+  <text x="790" y="331" class="text">Clustering</text>
+  <rect x="774" y="360" width="126" height="48" class="task"/>
+  <text x="808" y="389" class="text">Trends</text>
+  <rect x="918" y="302" width="130" height="48" class="task"/>
+  <text x="949" y="331" class="text">Exports</text>
+
+  <path d="M 528 198 L 528 240 L 228 240 L 228 280" class="arrow"/>
+  <path d="M 733 186 L 733 240 L 475 240 L 475 280" class="arrow"/>
+  <path d="M 570 308 L 656 308" class="arrow"/>
+  <path d="M 720 308 L 774 268" class="arrow"/>
+  <path d="M 720 308 L 774 326" class="arrow"/>
+  <path d="M 688 340 L 688 384 L 774 384" class="arrow"/>
+  <path d="M 900 326 L 918 326" class="arrow"/>
+
+  <rect x="120" y="438" width="180" height="56" class="task"/>
+  <text x="144" y="465" class="text">AuthController +</text>
+  <text x="153" y="483" class="text">AuthService + JWT</text>
+
+  <rect x="332" y="438" width="194" height="56" class="task"/>
+  <text x="362" y="465" class="text">RegionService /</text>
+  <text x="354" y="483" class="text">IndicatorService CRUD</text>
+
+  <rect x="560" y="420" width="208" height="92" class="task"/>
+  <text x="593" y="448" class="text">ClusteringService</text>
+  <text x="582" y="470" class="small">1. собрать матрицу признаков</text>
+  <text x="581" y="488" class="small">2. z-score нормализация</text>
+  <text x="592" y="506" class="small">3. K-Means + сохранение</text>
+
+  <rect x="798" y="420" width="190" height="92" class="task"/>
+  <text x="836" y="448" class="text">TrendService</text>
+  <text x="825" y="470" class="small">OLS-регрессия по</text>
+  <text x="819" y="488" class="small">временному ряду и прогноз</text>
+  <text x="834" y="506" class="small">на целевой год</text>
+
+  <rect x="560" y="524" width="208" height="56" class="taskAlt"/>
+  <text x="601" y="551" class="text">ExportService</text>
+  <text x="587" y="569" class="small">PDF / Excel отчеты</text>
+
+  <path d="M 837 292 L 837 394 L 429 394 L 429 438" class="arrow"/>
+  <path d="M 837 350 L 837 398 L 664 398 L 664 420" class="arrow"/>
+  <path d="M 837 408 L 837 420" class="arrow"/>
+  <path d="M 983 350 L 983 398 L 664 398 L 664 420" class="arrow"/>
+  <path d="M 983 350 L 983 522 L 768 522" class="arrow"/>
+  <path d="M 228 336 L 228 438 L 120 438" class="arrow"/>
+
+  <rect x="88" y="626" width="180" height="58" class="taskAlt"/>
+  <text x="105" y="653" class="text">PostgreSQL: users, roles,</text>
+  <text x="116" y="671" class="text">refresh_tokens, system_logs</text>
+
+  <rect x="308" y="626" width="186" height="58" class="taskAlt"/>
+  <text x="325" y="653" class="text">PostgreSQL: regions,</text>
+  <text x="325" y="671" class="text">economic_indicators, values</text>
+
+  <rect x="534" y="626" width="208" height="58" class="taskAlt"/>
+  <text x="552" y="653" class="text">PostgreSQL: clustering_runs,</text>
+  <text x="559" y="671" class="text">clustering_assignments</text>
+
+  <rect x="782" y="626" width="156" height="58" class="taskAlt"/>
+  <text x="806" y="653" class="text">PostgreSQL:</text>
+  <text x="806" y="671" class="text">trend_models</text>
+
+  <rect x="960" y="626" width="90" height="58" class="taskAlt"/>
+  <text x="980" y="653" class="text">Redis</text>
+  <text x="974" y="671" class="text">Cache</text>
+
+  <rect x="868" y="704" width="182" height="28" class="note"/>
+  <text x="886" y="723" class="small">World Bank SyncService (по расписанию)</text>
+
+  <path d="M 210 494 L 210 626" class="arrow"/>
+  <path d="M 429 494 L 429 626" class="arrow"/>
+  <path d="M 664 512 L 664 626" class="arrow"/>
+  <path d="M 893 512 L 893 626" class="arrow"/>
+  <path d="M 664 580 L 664 626" class="arrow"/>
+  <path d="M 664 468 L 1005 468 L 1005 626" class="dash"/>
+  <path d="M 959 718 L 959 684" class="dash"/>
+
+  <rect x="48" y="746" width="500" height="28" class="note"/>
+  <text x="60" y="765" class="small">Основной сквозной процесс: авторизация → выбор сценария → расчет / CRUD → сохранение результата → визуализация → экспорт</text>
+</svg>

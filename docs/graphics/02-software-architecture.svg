@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1123" height="794" viewBox="0 0 1123 794">
+  <defs>
+    <style>
+      .title { font: 700 28px Arial, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Arial, sans-serif; fill: #475569; }
+      .h { font: 700 18px Arial, sans-serif; fill: #0f172a; }
+      .text { font: 13px Arial, sans-serif; fill: #0f172a; }
+      .small { font: 12px Arial, sans-serif; fill: #334155; }
+      .box { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; rx: 16; ry: 16; }
+      .blue { fill: #eff6ff; stroke: #2563eb; }
+      .cyan { fill: #ecfeff; stroke: #0891b2; }
+      .green { fill: #ecfdf5; stroke: #059669; }
+      .amber { fill: #fffbeb; stroke: #d97706; }
+      .slate { fill: #f8fafc; stroke: #64748b; }
+      .line { stroke: #334155; stroke-width: 2; fill: none; marker-end: url(#m); }
+      .dash { stroke: #64748b; stroke-width: 1.6; fill: none; stroke-dasharray: 6 4; marker-end: url(#m); }
+    </style>
+    <marker id="m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/>
+    </marker>
+  </defs>
+
+  <rect width="1123" height="794" fill="#f8fafc"/>
+  <text x="42" y="48" class="title">5.2. Архитектура программного средства</text>
+  <text x="42" y="74" class="subtitle">Многослойная архитектура: React SPA → REST API Spring Boot → PostgreSQL / Redis / внешние сервисы</text>
+
+  <rect x="60" y="120" width="220" height="124" class="box amber"/>
+  <text x="123" y="152" class="h">Клиент</text>
+  <text x="88" y="182" class="text">Браузер пользователя</text>
+  <text x="88" y="204" class="small">JWT в localStorage</text>
+  <text x="88" y="224" class="small">HTTP(S) запросы к REST API</text>
+
+  <rect x="330" y="108" width="320" height="148" class="box blue"/>
+  <text x="420" y="140" class="h">Frontend (React 18 + TS)</text>
+  <text x="356" y="172" class="text">Маршруты: Dashboard, Regions, Indicators,</text>
+  <text x="356" y="192" class="text">Clustering, Trends, Admin Users, Audit Logs</text>
+  <text x="356" y="214" class="small">TanStack Query + Zustand + Axios API client</text>
+  <text x="356" y="234" class="small">Nginx обслуживает SPA и проксирует /api</text>
+
+  <rect x="698" y="108" width="364" height="148" class="box cyan"/>
+  <text x="804" y="140" class="h">API boundary</text>
+  <text x="725" y="172" class="text">REST Controllers</text>
+  <text x="725" y="194" class="small">AuthController, RegionController, IndicatorController</text>
+  <text x="725" y="214" class="small">ClusteringController, TrendController, ExportController</text>
+  <text x="725" y="234" class="small">AdminController, GlobalExceptionHandler, DTOs</text>
+
+  <rect x="330" y="302" width="732" height="184" class="box green"/>
+  <text x="630" y="334" class="h">Доменный и сервисный слой Spring Boot</text>
+
+  <rect x="356" y="356" width="152" height="102" class="box"/>
+  <text x="392" y="384" class="text">AuthService</text>
+  <text x="388" y="404" class="small">регистрация</text>
+  <text x="394" y="422" class="small">логин</text>
+  <text x="379" y="440" class="small">refresh/logout</text>
+
+  <rect x="528" y="356" width="152" height="102" class="box"/>
+  <text x="562" y="384" class="text">RegionService</text>
+  <text x="566" y="404" class="small">CRUD</text>
+  <text x="552" y="422" class="small">фильтрация</text>
+  <text x="551" y="440" class="small">пагинация</text>
+
+  <rect x="700" y="356" width="152" height="102" class="box"/>
+  <text x="726" y="384" class="text">IndicatorService</text>
+  <text x="723" y="404" class="small">справочник</text>
+  <text x="717" y="422" class="small">значения рядов</text>
+  <text x="723" y="440" class="small">валидация</text>
+
+  <rect x="872" y="356" width="164" height="102" class="box"/>
+  <text x="902" y="384" class="text">ClusteringService</text>
+  <text x="897" y="404" class="small">матрица признаков</text>
+  <text x="896" y="422" class="small">z-score + K-Means</text>
+  <text x="890" y="440" class="small">сохранение результатов</text>
+
+  <rect x="442" y="502" width="180" height="102" class="box"/>
+  <text x="493" y="530" class="text">TrendService</text>
+  <text x="466" y="550" class="small">OLS-регрессия по годам</text>
+  <text x="483" y="568" class="small">forecast + R^2</text>
+  <text x="475" y="586" class="small">сохранение модели</text>
+
+  <rect x="648" y="502" width="180" height="102" class="box"/>
+  <text x="698" y="530" class="text">ExportService</text>
+  <text x="690" y="550" class="small">PDF / Excel</text>
+  <text x="675" y="568" class="small">формирование отчета</text>
+  <text x="675" y="586" class="small">по clustering run</text>
+
+  <rect x="854" y="502" width="182" height="102" class="box"/>
+  <text x="888" y="530" class="text">Audit + Admin</text>
+  <text x="876" y="550" class="small">управление ролями</text>
+  <text x="878" y="568" class="small">журнал действий</text>
+  <text x="875" y="586" class="small">события и метрики</text>
+
+  <rect x="60" y="302" width="220" height="170" class="box slate"/>
+  <text x="121" y="334" class="h">Безопасность</text>
+  <text x="88" y="366" class="text">SecurityConfig</text>
+  <text x="88" y="388" class="small">JWT filter + UserDetailsService</text>
+  <text x="88" y="408" class="small">Role-based access control</text>
+  <text x="88" y="428" class="small">OAuth2SuccessHandler</text>
+  <text x="88" y="448" class="small">CORS + stateless sessions</text>
+
+  <rect x="60" y="520" width="220" height="188" class="box amber"/>
+  <text x="113" y="552" class="h">Внешние подсистемы</text>
+  <text x="88" y="584" class="text">WorldBankSyncService</text>
+  <text x="88" y="604" class="small">WebClient → World Bank API</text>
+  <text x="88" y="624" class="small">планировщик @Scheduled</text>
+  <text x="88" y="644" class="small">seed/migrations Liquibase</text>
+  <text x="88" y="664" class="small">docker-compose orchestration</text>
+
+  <rect x="330" y="642" width="246" height="96" class="box blue"/>
+  <text x="396" y="674" class="h">PostgreSQL 15</text>
+  <text x="358" y="704" class="small">roles, users, refresh_tokens, system_logs</text>
+  <text x="358" y="722" class="small">regions, indicators, values, runs, trends</text>
+
+  <rect x="612" y="642" width="196" height="96" class="box cyan"/>
+  <text x="678" y="674" class="h">Redis</text>
+  <text x="639" y="704" class="small">кэш списков и карточек</text>
+  <text x="639" y="722" class="small">JSON serialization</text>
+
+  <rect x="844" y="642" width="218" height="96" class="box green"/>
+  <text x="886" y="674" class="h">Отчетные файлы</text>
+  <text x="872" y="704" class="small">PDF (iText) и Excel (Apache POI)</text>
+  <text x="888" y="722" class="small">выгрузка результатов</text>
+
+  <path d="M 280 182 L 330 182" class="line"/>
+  <path d="M 650 182 L 698 182" class="line"/>
+  <path d="M 880 256 L 880 302" class="line"/>
+  <path d="M 220 244 L 220 302" class="line"/>
+  <path d="M 430 256 L 430 302" class="line"/>
+  <path d="M 604 458 L 604 502" class="line"/>
+  <path d="M 954 458 L 954 502" class="line"/>
+  <path d="M 210 472 L 210 520" class="dash"/>
+  <path d="M 454 604 L 454 642" class="line"/>
+  <path d="M 738 604 L 738 642" class="line"/>
+  <path d="M 954 604 L 954 642" class="line"/>
+  <path d="M 280 182 L 280 690 L 330 690" class="dash"/>
+  <path d="M 952 256 L 952 690 L 844 690" class="dash"/>
+  <path d="M 952 256 L 952 690 L 808 690" class="dash"/>
+
+  <rect x="40" y="748" width="1043" height="22" fill="#e2e8f0" rx="10"/>
+  <text x="54" y="763" class="small">Архитектурный стиль: SPA + REST + service layer + repository pattern + PostgreSQL + Redis cache + external integration</text>
+</svg>

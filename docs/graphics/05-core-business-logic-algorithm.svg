@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1123" height="794" viewBox="0 0 1123 794">
+  <defs>
+    <style>
+      .title { font: 700 28px Arial, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Arial, sans-serif; fill: #475569; }
+      .text { font: 13px Arial, sans-serif; fill: #0f172a; }
+      .small { font: 12px Arial, sans-serif; fill: #334155; }
+      .proc { fill: #eff6ff; stroke: #2563eb; stroke-width: 1.6; rx: 14; ry: 14; }
+      .io { fill: #ecfdf5; stroke: #059669; stroke-width: 1.6; }
+      .decision { fill: #fff7ed; stroke: #ea580c; stroke-width: 1.6; }
+      .term { fill: #ffffff; stroke: #0f172a; stroke-width: 2; }
+      .note { fill: #f8fafc; stroke: #94a3b8; stroke-dasharray: 5 4; }
+      .line { stroke: #334155; stroke-width: 2; fill: none; marker-end: url(#m); }
+    </style>
+    <marker id="m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/>
+    </marker>
+  </defs>
+
+  <rect width="1123" height="794" fill="#f8fafc"/>
+  <text x="42" y="48" class="title">5.5. Схема алгоритма основной бизнес-логики</text>
+  <text x="42" y="74" class="subtitle">Алгоритм запуска кластеризации регионов в ClusteringService + KMeansAlgorithm</text>
+
+  <circle cx="120" cy="142" r="24" class="term"/>
+  <text x="95" y="184" class="small">Начало</text>
+
+  <rect x="196" y="114" width="198" height="58" class="io"/>
+  <text x="232" y="141" class="text">Получить запрос:</text>
+  <text x="219" y="159" class="small">name, kClusters, year, indicatorIds</text>
+
+  <rect x="438" y="114" width="212" height="58" class="proc"/>
+  <text x="486" y="141" class="text">Загрузить все регионы</text>
+  <text x="468" y="159" class="small">regionRepository.findAll()</text>
+
+  <polygon points="726,143 764,105 802,143 764,181" class="decision"/>
+  <text x="737" y="139" class="small">regions</text>
+  <text x="744" y="155" class="small">&lt; k ?</text>
+
+  <rect x="840" y="114" width="208" height="58" class="proc"/>
+  <text x="864" y="141" class="text">ValidationException</text>
+  <text x="877" y="159" class="small">Not enough regions</text>
+
+  <rect x="64" y="254" width="214" height="62" class="proc"/>
+  <text x="100" y="281" class="text">Построить матрицу признаков</text>
+  <text x="107" y="299" class="small">region × indicator × year</text>
+
+  <rect x="322" y="254" width="210" height="62" class="proc"/>
+  <text x="364" y="281" class="text">Заполнить пропуски</text>
+  <text x="371" y="299" class="small">значением 0.0</text>
+
+  <rect x="576" y="254" width="208" height="62" class="proc"/>
+  <text x="606" y="281" class="text">z-score нормализация</text>
+  <text x="616" y="299" class="small">по каждому столбцу</text>
+
+  <rect x="828" y="254" width="210" height="62" class="proc"/>
+  <text x="867" y="281" class="text">Инициализировать</text>
+  <text x="876" y="299" class="small">случайные центроиды</text>
+
+  <rect x="74" y="390" width="194" height="62" class="proc"/>
+  <text x="117" y="417" class="text">Назначить метки</text>
+  <text x="114" y="435" class="small">по min distance</text>
+
+  <rect x="312" y="390" width="194" height="62" class="proc"/>
+  <text x="352" y="417" class="text">Пересчитать</text>
+  <text x="355" y="435" class="small">центроиды</text>
+
+  <polygon points="592,421 632,381 672,421 632,461" class="decision"/>
+  <text x="605" y="417" class="small">Сошлось</text>
+  <text x="611" y="433" class="small">?</text>
+
+  <rect x="722" y="390" width="194" height="62" class="proc"/>
+  <text x="765" y="417" class="text">Итерация++</text>
+  <text x="738" y="435" class="small">или break по threshold</text>
+
+  <rect x="930" y="390" width="132" height="62" class="proc"/>
+  <text x="957" y="417" class="text">Цикл</text>
+  <text x="946" y="435" class="small">до 300 итераций</text>
+
+  <rect x="114" y="534" width="224" height="62" class="proc"/>
+  <text x="157" y="561" class="text">Вычислить inertia</text>
+  <text x="143" y="579" class="small">Σ distance² до центроида</text>
+
+  <rect x="384" y="522" width="286" height="86" class="proc"/>
+  <text x="425" y="549" class="text">Сформировать ClusteringRun</text>
+  <text x="409" y="567" class="small">name, k, year, iterations, inertia, metadata</text>
+  <text x="431" y="585" class="small">metadata = indicatorIds + centroids</text>
+
+  <rect x="720" y="522" width="302" height="86" class="proc"/>
+  <text x="754" y="549" class="text">Для каждого региона создать</text>
+  <text x="772" y="567" class="text">ClusteringAssignment</text>
+  <text x="741" y="585" class="small">clusterLabel + distanceToCentroid</text>
+
+  <rect x="276" y="662" width="250" height="58" class="io"/>
+  <text x="315" y="689" class="text">Сохранить run в PostgreSQL</text>
+  <text x="324" y="707" class="small">cascade assignments + JSONB metadata</text>
+
+  <rect x="570" y="662" width="234" height="58" class="io"/>
+  <text x="605" y="689" class="text">Опубликовать доменное</text>
+  <text x="617" y="707" class="small">событие completed</text>
+
+  <rect x="846" y="662" width="154" height="58" class="io"/>
+  <text x="879" y="689" class="text">Вернуть DTO</text>
+  <text x="869" y="707" class="small">с assignments</text>
+
+  <circle cx="1042" cy="691" r="24" class="term"/>
+  <text x="1017" y="735" class="small">Конец</text>
+
+  <path d="M 144 142 L 196 142" class="line"/>
+  <path d="M 394 143 L 438 143" class="line"/>
+  <path d="M 650 143 L 726 143" class="line"/>
+  <path d="M 802 143 L 840 143" class="line"/>
+  <path d="M 764 181 L 764 224 L 171 224 L 171 254" class="line"/>
+  <path d="M 278 285 L 322 285" class="line"/>
+  <path d="M 532 285 L 576 285" class="line"/>
+  <path d="M 784 285 L 828 285" class="line"/>
+  <path d="M 933 316 L 933 354 L 171 354 L 171 390" class="line"/>
+  <path d="M 268 421 L 312 421" class="line"/>
+  <path d="M 506 421 L 592 421" class="line"/>
+  <path d="M 672 421 L 722 421" class="line"/>
+  <path d="M 916 421 L 930 421" class="line"/>
+  <path d="M 996 390 L 996 356 L 171 356 L 171 390" class="line"/>
+  <path d="M 632 461 L 632 500 L 226 500 L 226 534" class="line"/>
+  <path d="M 338 565 L 384 565" class="line"/>
+  <path d="M 670 565 L 720 565" class="line"/>
+  <path d="M 870 608 L 870 636 L 401 636 L 401 662" class="line"/>
+  <path d="M 526 691 L 570 691" class="line"/>
+  <path d="M 804 691 L 846 691" class="line"/>
+  <path d="M 1000 691 L 1018 691" class="line"/>
+
+  <rect x="66" y="640" width="168" height="88" class="note"/>
+  <text x="82" y="666" class="text">Реализовано в:</text>
+  <text x="82" y="688" class="small">ClusteringService.runClustering()</text>
+  <text x="82" y="706" class="small">KMeansAlgorithm.cluster()</text>
+
+  <rect x="842" y="92" width="220" height="18" class="note"/>
+  <text x="852" y="105" class="small">ветка ошибки при недостаточном количестве регионов</text>
+</svg>

@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1123" height="794" viewBox="0 0 1123 794">
+  <defs>
+    <style>
+      .title { font: 700 28px Arial, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Arial, sans-serif; fill: #475569; }
+      .h { font: 700 16px Arial, sans-serif; fill: #0f172a; }
+      .text { font: 13px Arial, sans-serif; fill: #0f172a; }
+      .small { font: 12px Arial, sans-serif; fill: #475569; }
+      .frame { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; rx: 18; ry: 18; }
+      .header { fill: #e2e8f0; }
+      .sidebar { fill: #0f172a; }
+      .screenTitle { font: 700 14px Arial, sans-serif; fill: #ffffff; }
+      .chip { fill: #dbeafe; stroke: #60a5fa; }
+      .chipText { font: 12px Arial, sans-serif; fill: #1e3a8a; }
+      .accentA { fill: #eff6ff; stroke: #2563eb; }
+      .accentB { fill: #ecfdf5; stroke: #059669; }
+      .accentC { fill: #fff7ed; stroke: #ea580c; }
+      .accentD { fill: #f5f3ff; stroke: #7c3aed; }
+      .line { stroke: #334155; stroke-width: 1.8; fill: none; marker-end: url(#m); }
+    </style>
+    <marker id="m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/>
+    </marker>
+  </defs>
+
+  <rect width="1123" height="794" fill="#f8fafc"/>
+  <text x="42" y="48" class="title">5.4. Модели представления программного средства</text>
+  <text x="42" y="74" class="subtitle">Структура экранов React SPA и основные пользовательские представления системы</text>
+
+  <rect x="44" y="108" width="250" height="176" class="frame accentA"/>
+  <text x="72" y="140" class="h">Публичные представления</text>
+  <rect x="66" y="160" width="206" height="34" class="chip" rx="10" ry="10"/>
+  <text x="132" y="182" class="chipText">LoginPage</text>
+  <rect x="66" y="204" width="206" height="34" class="chip" rx="10" ry="10"/>
+  <text x="126" y="226" class="chipText">RegisterPage</text>
+  <rect x="66" y="248" width="206" height="34" class="chip" rx="10" ry="10"/>
+  <text x="103" y="270" class="chipText">OAuth2CallbackPage</text>
+
+  <rect x="324" y="108" width="754" height="626" class="frame accentB"/>
+  <text x="354" y="140" class="h">Защищенная часть приложения</text>
+  <text x="354" y="162" class="small">ProtectedRoute → AppLayout → рабочие страницы и административные представления</text>
+
+  <rect x="352" y="190" width="694" height="98" class="frame"/>
+  <rect x="372" y="208" width="116" height="62" class="sidebar" rx="12" ry="12"/>
+  <text x="395" y="243" class="screenTitle">Sidebar</text>
+  <rect x="510" y="208" width="516" height="22" class="header" rx="8" ry="8"/>
+  <text x="532" y="223" class="small">Header / user menu / navigation context</text>
+  <rect x="510" y="240" width="516" height="30" class="chip" rx="8" ry="8"/>
+  <text x="532" y="259" class="chipText">Outlet для экранов: dashboard, справочники, аналитика, администрирование</text>
+
+  <rect x="352" y="314" width="198" height="174" class="frame accentA"/>
+  <text x="378" y="344" class="h">DashboardPage</text>
+  <rect x="372" y="362" width="160" height="24" class="chip" rx="8" ry="8"/>
+  <text x="397" y="378" class="chipText">PageHeader</text>
+  <rect x="372" y="396" width="70" height="56" class="frame"/>
+  <rect x="452" y="396" width="70" height="56" class="frame"/>
+  <rect x="372" y="460" width="150" height="14" fill="#e2e8f0" rx="7"/>
+  <text x="382" y="479" class="small">summary cards / overview</text>
+
+  <rect x="570" y="314" width="218" height="174" class="frame accentC"/>
+  <text x="595" y="344" class="h">RegionsPage</text>
+  <rect x="590" y="362" width="176" height="28" class="chip" rx="8" ry="8"/>
+  <text x="614" y="380" class="chipText">filter + sort + pagination</text>
+  <rect x="590" y="400" width="176" height="62" class="frame"/>
+  <text x="624" y="435" class="small">таблица регионов</text>
+  <rect x="684" y="324" width="82" height="22" class="chip" rx="8" ry="8"/>
+  <text x="698" y="339" class="chipText">Add Region</text>
+  <text x="592" y="476" class="small">для admin: create form, delete action</text>
+
+  <rect x="808" y="314" width="218" height="174" class="frame accentC"/>
+  <text x="826" y="344" class="h">IndicatorsPage</text>
+  <rect x="828" y="362" width="176" height="28" class="chip" rx="8" ry="8"/>
+  <text x="852" y="380" class="chipText">catalog of indicators</text>
+  <rect x="828" y="400" width="176" height="62" class="frame"/>
+  <text x="852" y="435" class="small">справочник показателей</text>
+  <text x="830" y="476" class="small">значения временных рядов через API</text>
+
+  <rect x="352" y="520" width="316" height="184" class="frame accentD"/>
+  <text x="378" y="550" class="h">ClusteringPage</text>
+  <rect x="372" y="568" width="118" height="102" class="frame"/>
+  <text x="393" y="590" class="small">форма запуска</text>
+  <text x="385" y="608" class="small">name / k / year</text>
+  <text x="394" y="626" class="small">indicatorIds</text>
+  <rect x="500" y="568" width="148" height="102" class="frame"/>
+  <text x="531" y="590" class="small">история запусков</text>
+  <text x="525" y="608" class="small">выбор результата</text>
+  <rect x="372" y="680" width="276" height="14" fill="#ddd6fe" rx="7"/>
+  <text x="378" y="704" class="small">графики: cluster size, distance by region, centroid profiles, export PDF/Excel</text>
+
+  <rect x="690" y="520" width="336" height="184" class="frame accentD"/>
+  <text x="720" y="550" class="h">TrendsPage + Admin area</text>
+  <rect x="710" y="568" width="144" height="102" class="frame"/>
+  <text x="734" y="590" class="small">TrendsPage</text>
+  <text x="719" y="608" class="small">region + indicator + year</text>
+  <text x="726" y="626" class="small">forecast chart / models</text>
+  <rect x="870" y="568" width="136" height="42" class="chip" rx="8" ry="8"/>
+  <text x="895" y="594" class="chipText">AdminUsersPage</text>
+  <rect x="870" y="620" width="136" height="42" class="chip" rx="8" ry="8"/>
+  <text x="901" y="646" class="chipText">AdminLogsPage</text>
+  <text x="871" y="681" class="small">доступно только роли ADMIN</text>
+
+  <path d="M 294 196 L 324 196" class="line"/>
+  <path d="M 294 222 L 324 222" class="line"/>
+  <path d="M 294 248 L 324 248" class="line"/>
+  <path d="M 699 288 L 699 314" class="line"/>
+  <path d="M 699 488 L 699 520" class="line"/>
+
+  <rect x="40" y="742" width="1043" height="24" fill="#e2e8f0" rx="10"/>
+  <text x="54" y="758" class="small">Маршрутизация описана в frontend/src/App.tsx, а экраны используют общие UI-компоненты, TanStack Query, Zustand и API-сервисы для связи с backend.</text>
+</svg>
